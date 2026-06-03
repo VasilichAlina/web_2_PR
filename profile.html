@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет | Camellia Studio</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background: #FFFBF6;
+            color: #41322c;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: #5c3f32;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+        }
+        .content {
+            padding: 30px;
+        }
+        .login-info {
+            background: #F5E9DB;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .login-info code {
+            background: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 1.1rem;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #5C4033;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #D2B48C;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        button {
+            background: #5c3f32;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background: #4e3a2c;
+        }
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+        .logout {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .logout a {
+            color: #5c3f32;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Camellia Studio</h1>
+        <p>Личный кабинет</p>
+    </div>
+    <div class="content">
+        <div id="authPanel">
+            <!-- Форма входа -->
+            <div id="loginForm">
+                <h2>Вход в личный кабинет</h2>
+                <div id="loginMessage" class="message"></div>
+                <div class="form-group">
+                    <label>Логин</label>
+                    <input type="text" id="loginInput" placeholder="Например: camellia_12345">
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="passwordInput" placeholder="Ваш пароль">
+                </div>
+                <button onclick="login()">Войти</button>
+            </div>
+            
+            <!-- Форма профиля (скрыта до входа) -->
+            <div id="profileForm" style="display: none;">
+                <div class="logout">
+                    <a href="#" onclick="logout()">🚪 Выйти</a>
+                </div>
+                <div id="profileMessage" class="message"></div>
+                <div class="login-info">
+                    <strong>Вы вошли как:</strong><br>
+                    <code id="userLogin"></code>
+                </div>
+                <form id="editForm">
+                    <div class="form-group">
+                        <label>ФИО *</label>
+                        <input type="text" id="fullname" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Телефон *</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Тип фотосессии</label>
+                        <select id="session_type">
+                            <option value="">Выберите...</option>
+                            <option>Индивидуальный портрет</option>
+                            <option>Семейная</option>
+                            <option>Love-story / Пара</option>
+                            <option>Детская</option>
+                            <option>Свадебная</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Место съемки</label>
+                        <select id="location_type">
+                            <option value="">Выберите...</option>
+                            <option>В студии</option>
+                            <option>Выездная съемка</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Предпочитаемая студия</label>
+                        <select id="preferred_studio">
+                            <option value="">Не важно</option>
+                            <option>Лофт-студия</option>
+                            <option>Классическая студия</option>
+                            <option>Студия с естественным светом</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Предпочтительная дата</label>
+                        <input type="date" id="preferred_date">
+                    </div>
+                    <div class="form-group">
+                        <label>Пожелания</label>
+                        <textarea id="message" rows="3"></textarea>
+                    </div>
+                    <button type="button" onclick="updateProfile()">Сохранить изменения</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentUser = null;
+    
+    // Получаем логин из URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const loginFromUrl = urlParams.get('login');
+    if (loginFromUrl) {
+        document.getElementById('loginInput').value = loginFromUrl;
+    }
+    
+    // Вход
+    async function login() {
+        const login = document.getElementById('loginInput').value;
+        const password = document.getElementById('passwordInput').value;
+        
+        if (!login || !password) {
+            showLoginMessage('error', 'Введите логин и пароль');
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api.php/profile', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Basic ' + btoa(login + ':' + password)
+                }
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                currentUser = result.user;
+                // Сохраняем креды для следующих запросов
+                sessionStorage.setItem('camellia_auth', btoa(login + ':' + password));
+                showProfileForm();
+            } else {
+                showLoginMessage('error', 'Неверный логин или пароль');
+            }
+        } catch (error) {
+            showLoginMessage('error', 'Ошибка соединения с сервером');
+        }
+    }
+    
+    // Показать форму профиля
+    function showProfileForm() {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('profileForm').style.display = 'block';
+        document.getElementById('userLogin').textContent = currentUser.login;
+        
+        // Заполняем поля
+        document.getElementById('fullname').value = currentUser.fullname || '';
+        document.getElementById('phone').value = currentUser.phone || '';
+        document.getElementById('email').value = currentUser.email || '';
+        document.getElementById('session_type').value = currentUser.session_type || '';
+        document.getElementById('location_type').value = currentUser.location_type || '';
+        document.getElementById('preferred_studio').value = currentUser.preferred_studio || '';
+        document.getElementById('preferred_date').value = currentUser.preferred_date || '';
+        document.getElementById('message').value = currentUser.message || '';
+    }
+    
+    // Обновить профиль
+    async function updateProfile() {
+        const auth = sessionStorage.getItem('camellia_auth');
+        if (!auth) {
+            logout();
+            return;
+        }
+        
+        const updatedData = {
+            fullname: document.getElementById('fullname').value,
+            phone: document.getElementById('phone').value,
+            email: document.getElementById('email').value,
+            session_type: document.getElementById('session_type').value,
+            location_type: document.getElementById('location_type').value,
+            preferred_studio: document.getElementById('preferred_studio').value,
+            preferred_date: document.getElementById('preferred_date').value,
+            message: document.getElementById('message').value
+        };
+        
+        try {
+            const response = await fetch('/api.php/profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Basic ' + auth
+                },
+                body: JSON.stringify(updatedData)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                currentUser = result.user;
+                showProfileMessage('success', '✅ Данные успешно обновлены!');
+            } else {
+                showProfileMessage('error', 'Ошибка: ' + (result.error || 'Неизвестная ошибка'));
+            }
+        } catch (error) {
+            showProfileMessage('error', 'Ошибка соединения с сервером');
+        }
+    }
+    
+    // Выход
+    function logout() {
+        sessionStorage.removeItem('camellia_auth');
+        currentUser = null;
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('profileForm').style.display = 'none';
+        document.getElementById('loginInput').value = '';
+        document.getElementById('passwordInput').value = '';
+    }
+    
+    function showLoginMessage(type, text) {
+        const msg = document.getElementById('loginMessage');
+        msg.textContent = text;
+        msg.className = `message ${type}`;
+        setTimeout(() => msg.className = 'message', 3000);
+    }
+    
+    function showProfileMessage(type, text) {
+        const msg = document.getElementById('profileMessage');
+        msg.textContent = text;
+        msg.className = `message ${type}`;
+        setTimeout(() => msg.className = 'message', 3000);
+    }
+    
+    // Проверяем, есть ли сохранённая сессия
+    if (sessionStorage.getItem('camellia_auth')) {
+        // Восстанавливаем сессию
+        login();
+    }
+</script>
+</body>
+</html>
