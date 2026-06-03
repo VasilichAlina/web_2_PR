@@ -1557,7 +1557,7 @@ bookingFormContent.addEventListener('submit', async function(e) {
     
     try {
         // Пытаемся отправить через бэкенд
-        const response = await fetch('/api.php/register', {
+        const response = await fetch('api.php/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
@@ -1568,7 +1568,7 @@ bookingFormContent.addEventListener('submit', async function(e) {
         if (result.success) {
             // Успех! Показываем логин и пароль
             showFormMessage('success', 
-                `✅ Заявка отправлена!<br><br>
+                ` Заявка отправлена!<br><br>
                 <strong>Ваши данные для входа (сохраните!):</strong><br>
                 Логин: <code>${result.login}</code><br>
                 Пароль: <code>${result.password}</code><br><br>
