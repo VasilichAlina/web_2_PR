@@ -2,160 +2,574 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Camellia | Студия фотографии</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camellia | Студия художественной фотографии</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
+        /* ВСЕ ТВОИ СТИЛИ - ОСТАВЛЯЮ БЕЗ ИЗМЕНЕНИЙ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Times New Roman', serif; background: #FFFBF6; color: #41322c; }
-        .container { max-width: 600px; margin: 50px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #5c3f32; margin-bottom: 30px; }
+        body { font-family: 'Times New Roman', Times, serif; line-height: 1.6; color: #41322c; background-color: #FFFBF6; display: flex; flex-direction: column; min-height: 100vh; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .container { display: flex; flex: 1; max-width: 1700px; margin: 0 auto; width: 100%; }
+        .header-wrapper { position: relative; height: 600px; overflow: hidden; margin-bottom: 10px; }
+        .header-photo { width: 100%; height: 100%; object-fit: cover; animation: fadeIn 1.5s ease-out; }
+        .logo-container { position: absolute; top: 50%; left: 40%; transform: translate(-50%, -50%); text-align: center; background-color: rgba(255, 251, 246, 0.85); padding: 20px 40px; border-radius: 10px; box-shadow: 0 5px 15px rgba(92, 64, 51, 0.2); animation: fadeIn 1s ease-out 0.3s both; }
+        .logo { font-family: 'Dancing Script', cursive; font-size: 3.5rem; font-weight: 700; color: #725c4d; text-decoration: none; display: block; transition: transform 0.3s; }
+        .logo:hover { transform: scale(1.05); }
+        .logo-subtitle { font-size: 1rem; color: #503529; letter-spacing: 2px; margin-top: 5px; text-transform: uppercase; }
+        
+        /* НОВАЯ КНОПКА ВХОДА В ШАПКЕ */
+        .auth-btn-header {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #5c3f32;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            z-index: 100;
+            font-family: 'Times New Roman', Times, serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        .auth-btn-header:hover { background-color: #4e3a2c; transform: translateY(-2px); }
+        
+        .menu-toggle { display: none; position: absolute; top: 20px; left: 20px; background: rgba(245, 233, 219, 0.9); border: 2px solid #b6a193; color: #46382e; font-size: 1.5rem; padding: 10px 15px; border-radius: 5px; cursor: pointer; z-index: 100; }
+        .sidebar { width: 400px; background-color: #F9F1E7; padding: 30px 25px; border-right: 1px solid #dfd8d0; flex-shrink: 0; overflow-y: auto; animation: slideInLeft 0.8s ease-out; }
+        .sidebar-section { margin-bottom: 30px; }
+        .sidebar-section h3 { font-size: 1.3rem; color: #5f3022; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px dashed #c5b298; }
+        .sidebar-link { display: block; padding: 12px 15px; background-color: #F5E9DB; color: #572e27; text-decoration: none; border-radius: 5px; margin-bottom: 10px; border-left: 4px solid #c9b08f; cursor: pointer; transition: all 0.3s; }
+        .sidebar-link:hover { background-color: #E8D0B3; transform: translateX(5px); }
+        .sidebar-link i { margin-right: 10px; }
+        .main-content { flex: 1; padding: 30px 40px; overflow-y: auto; }
+        .hero-section { display: flex; flex-wrap: wrap; gap: 30px; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid #E8D0B3; }
+        .info-box { flex: 1; min-width: 300px; opacity: 0; animation: slideInLeft 0.8s ease-out 0.4s forwards; }
+        .info-box h2 { font-size: 2rem; color: #46231a; margin-bottom: 20px; }
+        .studio-gallery { flex: 0 0 400px; min-width: 300px; opacity: 0; animation: slideInRight 0.8s ease-out 0.6s forwards; }
+        .studio-gallery h3 { font-size: 1.5rem; color: #663529; margin-bottom: 15px; text-align: center; }
+        .studio-images { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+        .studio-images img { width: 100%; height: 120px; object-fit: cover; border-radius: 5px; transition: all 0.4s; }
+        .studio-images img:hover { transform: scale(1.05) rotate(1deg); }
+        .studio-images .main-studio-img { grid-column: span 2; height: 180px; }
+        .gallery-section { margin-bottom: 40px; opacity: 0; animation: fadeIn 0.8s ease-out 0.8s forwards; }
+        .gallery-section h2 { font-size: 1.8rem; color: #5f3c23; margin-bottom: 20px; text-align: center; }
+        .carousel-container { position: relative; overflow: hidden; border-radius: 8px; background-color: #F5E9DB; padding: 15px; max-width: 1250px; margin: 0 auto; }
+        .carousel-track { display: flex; transition: transform 0.5s ease-in-out; }
+        .carousel-slide { min-width: 25%; padding: 8px; }
+        .carousel-slide img { width: 100%; height: 180px; object-fit: cover; border-radius: 5px; transition: transform 0.3s; }
+        .carousel-slide img:hover { transform: scale(1.08); }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(83, 47, 20, 0.7); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: all 0.3s; }
+        .carousel-btn:hover { background-color: rgba(75, 43, 21, 0.9); transform: translateY(-50%) scale(1.1); }
+        .carousel-btn.prev { left: 5px; }
+        .carousel-btn.next { right: 5px; }
+        .carousel-dots { text-align: center; margin-top: 15px; }
+        .dot { display: inline-block; width: 10px; height: 10px; background-color: #D2B48C; border-radius: 50%; margin: 0 5px; cursor: pointer; }
+        .dot.active { background-color: #755c4a; transform: scale(1.3); }
+        .studios-section { margin: 40px 0; padding: 25px; background-color: #F9F1E7; border-radius: 10px; opacity: 0; animation: fadeIn 0.8s ease-out 1s forwards; }
+        .studios-section h2 { font-size: 1.8rem; color: #533a29; margin-bottom: 25px; text-align: center; }
+        .studios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .studio-item { text-align: center; cursor: pointer; transition: all 0.4s; padding: 15px; border-radius: 10px; }
+        .studio-item.selected { border: 2px solid #4d3625; background-color: rgba(139, 69, 19, 0.05); }
+        .studio-item img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
+        .studio-item h3 { color: #8a5e49; margin-bottom: 10px; }
+        .action-buttons { display: flex; justify-content: center; gap: 20px; margin: 30px 0; flex-wrap: wrap; }
+        .action-btn { background-color: #5c3f32; color: white; border: none; padding: 15px 30px; font-size: 1.1rem; border-radius: 30px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: all 0.3s; }
+        .action-btn:hover { background-color: #4e3a2c; transform: translateY(-5px); }
+        .calculator, .booking-form { background-color: #F9F1E7; padding: 25px; border-radius: 10px; margin: 20px 0 30px; border: 1px solid #E8D0B3; display: none; }
+        .calculator.show, .booking-form.show { display: block; }
+        .calculator h3, .booking-form h2 { color: #4d3423; margin-bottom: 20px; text-align: center; }
+        .calculator-item { margin-bottom: 20px; }
+        .calculator-item label { display: block; margin-bottom: 8px; color: #5C4033; }
+        .calculator-item select, .calculator-item input { width: 100%; padding: 12px; border: 1px solid #D2B48C; border-radius: 5px; background: white; }
+        .location-option { margin-bottom: 10px; }
+        .location-option label { display: flex; align-items: center; cursor: pointer; padding: 10px; border-radius: 5px; }
+        .location-option input { margin-right: 10px; width: 18px; height: 18px; }
+        .calculator-total { background-color: #F5E9DB; padding: 20px; border-radius: 8px; text-align: center; font-size: 1.5rem; color: #4d2417; font-weight: bold; margin-top: 25px; }
         .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; color: #5C4033; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #D2B48C; border-radius: 8px; font-size: 1rem; }
-        button { width: 100%; background: #5c3f32; color: white; border: none; padding: 15px; border-radius: 8px; font-size: 1.1rem; cursor: pointer; }
-        button:hover { background: #4e3a2c; }
-        .message { padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; }
-        .message.success { background: #d4edda; color: #155724; display: block; }
-        .message.error { background: #f8d7da; color: #721c24; display: block; }
-        .creds-box { background: #f0f0f0; padding: 15px; border-radius: 8px; margin-top: 20px; font-family: monospace; display: none; }
-        .btn-link { display: inline-block; background: #5c3f32; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; margin-top: 15px; text-align: center; }
-        .login-link { text-align: center; margin-top: 20px; }
-        .login-link a { color: #5c3f32; }
+        .form-group label { display: block; margin-bottom: 8px; color: #5C4033; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #D2B48C; border-radius: 5px; background: white; font-size: 1rem; }
+        .form-group textarea { height: 100px; resize: vertical; }
+        .submit-btn { width: 100%; background-color: #554235; color: white; border: none; padding: 15px; font-size: 1.1rem; border-radius: 5px; cursor: pointer; transition: all 0.3s; }
+        .submit-btn:hover:not(:disabled) { background-color: #5e4336; transform: translateY(-3px); }
+        .submit-btn:disabled { background-color: #D2B48C; cursor: not-allowed; }
+        .form-message { padding: 15px; border-radius: 5px; margin: 15px 0; text-align: center; display: none; }
+        .form-message.success { background-color: #d4edda; color: #155724; display: block; }
+        .form-message.error { background-color: #f8d7da; color: #721c24; display: block; }
+        .contacts { text-align: center; padding: 30px; background-color: #F5E9DB; border-radius: 10px; margin-bottom: 40px; }
+        .contacts h2 { color: #553c29; margin-bottom: 25px; }
+        .contact-methods { display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; }
+        .contact-method { flex: 1; min-width: 200px; padding: 20px; transition: all 0.3s; }
+        .contact-method:hover { transform: translateY(-5px); }
+        .contact-method i { font-size: 2.5rem; color: #523326; margin-bottom: 15px; }
+        footer { background-color: #5C4033; color: #F5E9DB; text-align: center; padding: 25px; margin-top: auto; }
+        @media (max-width: 1024px) {
+            .header-wrapper { height: 250px; }
+            .container { flex-direction: column; }
+            .sidebar { width: 100%; display: none; }
+            .sidebar.active { display: block; }
+            .menu-toggle { display: block; }
+            .carousel-slide { min-width: 33.33%; }
+            .studios-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .carousel-slide { min-width: 50%; }
+            .studios-grid { grid-template-columns: 1fr; }
+            .action-buttons { flex-direction: column; align-items: center; }
+        }
+        #gallery, #studios { scroll-margin-top: 120px; }
+        
+        /* Модальное окно для входа */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background-color: #FFFBF6; padding: 30px; border-radius: 15px; max-width: 400px; width: 90%; position: relative; }
+        .modal-content h3 { color: #5c3f32; margin-bottom: 20px; text-align: center; }
+        .modal-content input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #D2B48C; border-radius: 8px; }
+        .modal-content button { width: 100%; background-color: #5c3f32; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; }
+        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #5c3f32; }
+        .modal-message { padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center; display: none; }
+        .modal-message.error { background: #f8d7da; color: #721c24; display: block; }
+        .modal-message.success { background: #d4edda; color: #155724; display: block; }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1> Camellia Studio</h1>
-    <h3 style="text-align:center; margin-bottom:20px;">Запись на фотосессию</h3>
-    
-    <div id="formMessage" class="message"></div>
-    <div id="credsBox" class="creds-box"></div>
-    
-    <form id="bookingForm">
-        <div class="form-group">
-            <label>Ваше имя *</label>
-            <input type="text" id="fullname" required>
+    <div class="header-wrapper">
+        <img src="logo.jpg" alt="Студия фотографии Camellia" class="header-photo">
+        <div class="logo-container">
+            <a href="#" class="logo">Camellia</a>
+            <span class="logo-subtitle">Студия художественной фотографии</span>
         </div>
-        <div class="form-group">
-            <label>Телефон *</label>
-            <input type="tel" id="phone" required>
-        </div>
-        <div class="form-group">
-            <label>Email *</label>
-            <input type="email" id="email" required>
-        </div>
-        <div class="form-group">
-            <label>Тип фотосессии</label>
-            <select id="session_type">
-                <option value="">Выберите...</option>
-                <option>Индивидуальный портрет</option>
-                <option>Семейная</option>
-                <option>Love-story</option>
-                <option>Детская</option>
-                <option>Свадебная</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Место съемки</label>
-            <select id="location_type">
-                <option value="">Выберите...</option>
-                <option>В студии</option>
-                <option>Выездная съемка</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Предпочитаемая студия</label>
-            <select id="preferred_studio">
-                <option value="">Не важно</option>
-                <option>Лофт-студия</option>
-                <option>Классическая студия</option>
-                <option>Студия с естественным светом</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Предпочтительная дата</label>
-            <input type="date" id="preferred_date">
-        </div>
-        <div class="form-group">
-            <label>Пожелания</label>
-            <textarea id="message" rows="3"></textarea>
-        </div>
-        <button type="submit" id="submitBtn">Отправить заявку</button>
-    </form>
-    
-    <div class="login-link">
-        <a href="profile.html"> Уже есть логин и пароль? Войти в личный кабинет</a>
+        <button class="auth-btn-header" id="openLoginBtn">
+            <i class="fas fa-sign-in-alt"></i> Войти
+        </button>
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
     </div>
-</div>
 
-<script>
-const form = document.getElementById('bookingForm');
-const messageDiv = document.getElementById('formMessage');
-const credsBox = document.getElementById('credsBox');
+    <div class="container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <h3>Быстрые ссылки</h3>
+                <a class="sidebar-link" id="galleryLink"><i class="fas fa-images"></i>Галерея работ</a>
+                <a class="sidebar-link" id="studiosLink"><i class="fas fa-building"></i>Наши студии</a>
+                <a class="sidebar-link" id="calculatorLink"><i class="fas fa-calculator"></i>Калькулятор услуг</a>
+                <a class="sidebar-link" id="bookingLink"><i class="fas fa-calendar-check"></i>Запись на фотосессию</a>
+            </div>
+            <div class="sidebar-section">
+                <h3>О студии</h3>
+                <p>Camellia — это пространство, где моменты превращаются в вечное искусство. Мы специализируемся на портретной, семейной и арт-фотографии.</p>
+            </div>
+            <div class="sidebar-section">
+                <h3>Часы работы</h3>
+                <p>Пн-Пт: 9:00 - 21:00</p>
+                <p>Сб-Вс: 11:00 - 19:00</p>
+            </div>
+        </aside>
 
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const formData = {
-        fullname: document.getElementById('fullname').value,
-        phone: document.getElementById('phone').value,
-        email: document.getElementById('email').value,
-        session_type: document.getElementById('session_type').value,
-        location_type: document.getElementById('location_type').value,
-        preferred_studio: document.getElementById('preferred_studio').value,
-        preferred_date: document.getElementById('preferred_date').value,
-        message: document.getElementById('message').value
-    };
-    
-    if (!formData.fullname || !formData.phone || !formData.email) {
-        showMessage('error', ' Заполните имя, телефон и email!');
-        return;
-    }
-    
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = ' Отправка...';
-    
-    try {
-        const response = await fetch('api.php/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            // Показываем логин и пароль
-            credsBox.innerHTML = `
-                <strong> Заявка отправлена!</strong><br><br>
-                 <strong>СОХРАНИТЕ ЭТИ ДАННЫЕ:</strong><br>
-                 Логин: <code style="background:#fff;padding:4px 8px;border-radius:4px;font-size:1.1rem;">${result.login}</code><br>
-                 Пароль: <code style="background:#fff;padding:4px 8px;border-radius:4px;font-size:1.1rem;">${result.password}</code><br><br>
-                <a href="profile.html" class="btn-link" style="color:white; text-decoration:none;"> Войти в личный кабинет </a>
-            `;
-            credsBox.style.display = 'block';
-            showMessage('success', ' Заявка успешно отправлена!');
-            form.reset();
-        } else {
-            showMessage('error', ' Ошибка: ' + JSON.stringify(result.errors || result));
+        <main class="main-content">
+            <section class="hero-section">
+                <div class="info-box">
+                    <h2>Превратим ваши мгновения в вечное искусство</h2>
+                    <p>Студия Camellia предлагает профессиональную фотосъемку в уютной атмосфере. Мы работаем с естественным светом и вниманием к деталям, создавая фотографии, которые рассказывают вашу историю.</p>
+                    <p>Наша команда — опытные фотографы и ретушеры, которые помогут вам раскрыться перед камерой.</p>
+                    <p><strong>Выездная фотосессия:</strong> Мы приедем к вам домой, на природу или в любое другое место.</p>
+                </div>
+                <div class="studio-gallery">
+                    <h3>Наша студия</h3>
+                    <div class="studio-images">
+                        <img src="leftphoto3.jpg" alt="Интерьер студии 1" class="main-studio-img">
+                        <img src="leftpoto2.jpg" alt="Интерьер студии 2">
+                        <img src="leftphoto1.jpg" alt="Интерьер студии 3">
+                    </div>
+                    <p>Просторная студия с естественным светом, профессиональным оборудованием и уютной атмосферой.</p>
+                </div>
+            </section>
+
+            <section class="gallery-section" id="gallery">
+                <h2>Примеры наших работ</h2>
+                <div class="carousel-container">
+                    <button class="carousel-btn prev"><i class="fas fa-chevron-left"></i></button>
+                    <button class="carousel-btn next"><i class="fas fa-chevron-right"></i></button>
+                    <div class="carousel-track" id="carouselTrack"></div>
+                    <div class="carousel-dots" id="carouselDots"></div>
+                </div>
+            </section>
+
+            <section class="studios-section" id="studios">
+                <h2>Выберите студию для фотосессии</h2>
+                <p style="text-align: center; margin-bottom: 30px;">Выбранная студия повлияет на стоимость в калькуляторе</p>
+                <div class="studios-grid" id="studiosGrid"></div>
+            </section>
+
+            <div class="action-buttons">
+                <button class="action-btn" id="calcToggle"><i class="fas fa-calculator"></i>Рассчитать стоимость</button>
+                <button class="action-btn" id="formToggle"><i class="fas fa-calendar-alt"></i>Записаться на фотосессию</button>
+            </div>
+
+            <div class="calculator" id="calculator">
+                <h3>Калькулятор стоимости фотосессии</h3>
+                <div class="calculator-item">
+                    <label>Место съемки:</label>
+                    <div class="location-option"><label><input type="radio" name="location" value="studio" checked> В студии (базовая цена)</label></div>
+                    <div class="location-option"><label><input type="radio" name="location" value="client"> Выездная съемка (+30%)</label></div>
+                </div>
+                <div class="calculator-item" id="studioSelection">
+                    <label>Выберите студию:</label>
+                    <select id="studioType">
+                        <option value="1">Лофт-студия (стандарт)</option>
+                        <option value="1.2">Классическая студия (+20%)</option>
+                        <option value="1.3">Студия с естественным светом (+30%)</option>
+                    </select>
+                </div>
+                <div class="calculator-item">
+                    <label>Тип фотосессии:</label>
+                    <select id="photoType">
+                        <option value="5000">Индивидуальный портрет (5 000 ₽)</option>
+                        <option value="8000">Семейная (8 000 ₽)</option>
+                        <option value="12000">Love-story / Пара (12 000 ₽)</option>
+                        <option value="15000">Детская (15 000 ₽)</option>
+                        <option value="20000">Свадебная (20 000 ₽)</option>
+                    </select>
+                </div>
+                <div class="calculator-item">
+                    <label>Продолжительность:</label>
+                    <select id="duration">
+                        <option value="1">1 час (коэф. 1)</option>
+                        <option value="1.5">1,5 часа (коэф. 1.3)</option>
+                        <option value="2">2 часа (коэф. 1.6)</option>
+                        <option value="3">3 часа (коэф. 2)</option>
+                    </select>
+                </div>
+                <div class="calculator-item">
+                    <label>Ретушь:</label>
+                    <select id="retouch">
+                        <option value="0">Без ретуши</option>
+                        <option value="1000">10 фото (1 000 ₽)</option>
+                        <option value="2000">20 фото (2 000 ₽)</option>
+                        <option value="3000">30 фото (3 000 ₽)</option>
+                    </select>
+                </div>
+                <div class="calculator-total">Итого: <span id="totalPrice">5 000</span> ₽</div>
+            </div>
+
+            <div class="booking-form" id="bookingForm">
+                <h2>Записаться на фотосессию</h2>
+                <div id="formMessage" class="form-message"></div>
+                <form id="bookingFormContent">
+                    <div class="form-group"><label>Ваше имя *</label><input type="text" id="name" required></div>
+                    <div class="form-group"><label>Телефон *</label><input type="tel" id="phone" required></div>
+                    <div class="form-group"><label>Email *</label><input type="email" id="email" required></div>
+                    <div class="form-group">
+                        <label>Тип фотосессии *</label>
+                        <select id="sessionType" required>
+                            <option value="">Выберите...</option>
+                            <option>Индивидуальный портрет</option>
+                            <option>Семейная</option>
+                            <option>Love-story / Пара</option>
+                            <option>Детская</option>
+                            <option>Свадебная</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Место съемки *</label>
+                        <select id="locationType" required>
+                            <option value="">Выберите...</option>
+                            <option>В студии</option>
+                            <option>Выездная съемка</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Предпочитаемая студия</label>
+                        <select id="preferredStudio">
+                            <option value="">Не важно</option>
+                            <option>Лофт-студия</option>
+                            <option>Классическая студия</option>
+                            <option>Студия с естественным светом</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Предпочтительная дата</label><input type="date" id="preferredDate"></div>
+                    <div class="form-group"><label>Пожелания</label><textarea id="message" placeholder="Расскажите о ваших идеях..."></textarea></div>
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span id="submitText">Отправить заявку</span>
+                        <span id="submitSpinner" style="display: none;"><i class="fas fa-spinner fa-spin"></i> Отправка...</span>
+                    </button>
+                </form>
+            </div>
+
+            <section class="contacts">
+                <h2>Свяжитесь с нами</h2>
+                <div class="contact-methods">
+                    <div class="contact-method"><i class="fas fa-phone-alt"></i><h3>Телефон</h3><p>+7 (999) 999-99-99</p></div>
+                    <div class="contact-method"><i class="fas fa-envelope"></i><h3>Email</h3><p>camellia_studio@mail.com</p></div>
+                    <div class="contact-method"><i class="fab fa-instagram"></i><h3>Instagram</h3><p>@camellia_studio</p></div>
+                    <div class="contact-method"><i class="fas fa-map-marker-alt"></i><h3>Адрес</h3><p>ул. Красная, 84/2 г. Краснодар</p></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>© 2025 Студия художественной фотографии «Camellia». Все права защищены.</p>
+    </footer>
+
+    <!-- Модальное окно входа -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>Вход в личный кабинет</h3>
+            <div id="modalMessage" class="modal-message"></div>
+            <input type="text" id="modalLogin" placeholder="Логин">
+            <input type="password" id="modalPassword" placeholder="Пароль">
+            <button id="doLoginBtn">Войти</button>
+        </div>
+    </div>
+
+    <script>
+        // ИНИЦИАЛИЗАЦИЯ EMAILJS
+        (function() { emailjs.init("Rid5hAcPUfFrAVcE3"); })();
+
+        // ДАННЫЕ ДЛЯ КАРУСЕЛИ
+        const carouselImages = ["1.jpg", "17.jpg", "2.jpg", "16.jpg", "3.jpg", "15.jpg", "4.jpg", "14.jpg", "5.jpg", "13.jpg", "6.jpg", "12.jpg", "7.jpg", "11.jpg", "8.jpg", "10.jpg", "9.jpg", "18.jpg", "19.jpg", "20.jpg", "21.jpg", "22.jpg", "23.jpg", "24.jpg", "30.jpg", "31.jpg"];
+
+        // КАРУСЕЛЬ
+        const carouselTrack = document.getElementById('carouselTrack');
+        const carouselDots = document.getElementById('carouselDots');
+        let currentSlide = 0, slidesPerView = 4, autoSlideInterval;
+
+        function initCarousel() {
+            if (window.innerWidth <= 768) slidesPerView = 2;
+            else if (window.innerWidth <= 1024) slidesPerView = 3;
+            else slidesPerView = 4;
+            carouselTrack.innerHTML = '';
+            carouselDots.innerHTML = '';
+            const totalSlides = Math.ceil(carouselImages.length / slidesPerView);
+            for (let i = 0; i < totalSlides; i++) {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                for (let j = 0; j < slidesPerView; j++) {
+                    const idx = i * slidesPerView + j;
+                    if (idx < carouselImages.length) {
+                        const img = document.createElement('img');
+                        img.src = carouselImages[idx];
+                        img.onerror = () => img.src = 'https://placehold.co/300x180/FFFBF6/5C4033?text=Фото';
+                        slide.appendChild(img);
+                    }
+                }
+                carouselTrack.appendChild(slide);
+                const dot = document.createElement('span');
+                dot.className = 'dot';
+                if (i === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => { goToSlide(i); resetAutoSlide(); });
+                carouselDots.appendChild(dot);
+            }
+            updateCarousel();
+            startAutoSlide();
         }
-    } catch (error) {
-        console.error('Error:', error);
-        showMessage('error', ' Ошибка соединения с сервером. Убедитесь, что файл api.php находится в той же папке.');
-    } finally {
-        btn.disabled = false;
-        btn.textContent = '📩 Отправить заявку';
-    }
-});
+        function updateCarousel() { const slideWidth = 100 / carouselTrack.children.length; carouselTrack.style.transform = `translateX(-${currentSlide * slideWidth}%)`; document.querySelectorAll('.dot').forEach((dot, i) => dot.classList.toggle('active', i === currentSlide)); }
+        function nextSlide() { if(carouselTrack.children.length) currentSlide = (currentSlide + 1) % carouselTrack.children.length; updateCarousel(); }
+        function prevSlide() { if(carouselTrack.children.length) currentSlide = (currentSlide - 1 + carouselTrack.children.length) % carouselTrack.children.length; updateCarousel(); }
+        function goToSlide(i) { currentSlide = i; updateCarousel(); }
+        function startAutoSlide() { autoSlideInterval = setInterval(nextSlide, 5000); }
+        function resetAutoSlide() { clearInterval(autoSlideInterval); startAutoSlide(); }
+        document.querySelector('.carousel-btn.next')?.addEventListener('click', nextSlide);
+        document.querySelector('.carousel-btn.prev')?.addEventListener('click', prevSlide);
+        window.addEventListener('resize', () => { initCarousel(); resetAutoSlide(); });
+        document.addEventListener('DOMContentLoaded', initCarousel);
 
-function showMessage(type, text) {
-    messageDiv.innerHTML = text;
-    messageDiv.className = `message ${type}`;
-    setTimeout(() => {
-        messageDiv.style.display = 'none';
-        messageDiv.className = 'message';
-    }, 8000);
-}
-</script>
+        // СТУДИИ
+        const studiosData = [
+            { id: 1, name: "Лофт-студия", image: "loft.jpg", description: "Просторный лофт", priceMultiplier: 1.0 },
+            { id: 2, name: "Классическая студия", image: "classic.jpg", description: "Элегантный интерьер", priceMultiplier: 1.2 },
+            { id: 3, name: "Студия с естественным светом", image: "window.jpg", description: "Большие окна", priceMultiplier: 1.3 }
+        ];
+        let selectedStudioId = 1;
+        function initStudios() {
+            const grid = document.getElementById('studiosGrid');
+            grid.innerHTML = '';
+            studiosData.forEach(studio => {
+                const item = document.createElement('div');
+                item.className = `studio-item ${studio.id === selectedStudioId ? 'selected' : ''}`;
+                item.innerHTML = `<img src="${studio.image}" onerror="this.src='https://placehold.co/400x200/F9F1E7/5C4033?text=${encodeURIComponent(studio.name)}'"><h3>${studio.name}</h3><p>${studio.description}</p><small>x${studio.priceMultiplier}</small>`;
+                item.addEventListener('click', () => {
+                    selectedStudioId = studio.id;
+                    document.querySelectorAll('.studio-item').forEach(i => i.classList.remove('selected'));
+                    item.classList.add('selected');
+                    document.getElementById('studioType').value = studio.priceMultiplier;
+                    calculatePrice();
+                });
+                grid.appendChild(item);
+            });
+        }
+        initStudios();
+
+        // КАЛЬКУЛЯТОР
+        const calcToggle = document.getElementById('calcToggle');
+        const calculator = document.getElementById('calculator');
+        const formToggle = document.getElementById('formToggle');
+        const bookingForm = document.getElementById('bookingForm');
+        function calculatePrice() {
+            const typePrice = parseInt(document.getElementById('photoType').value);
+            const duration = parseFloat(document.getElementById('duration').value);
+            const retouch = parseInt(document.getElementById('retouch').value);
+            const location = document.querySelector('input[name="location"]:checked').value;
+            let mult = location === 'studio' ? parseFloat(document.getElementById('studioType').value) : 1.3;
+            const total = Math.round((typePrice * duration * mult) + retouch);
+            document.getElementById('totalPrice').textContent = total.toLocaleString('ru-RU');
+            return total;
+        }
+        calcToggle.addEventListener('click', () => {
+            if (calculator.classList.contains('show')) { calculator.classList.remove('show'); calcToggle.classList.remove('active'); }
+            else { calculator.classList.add('show'); calcToggle.classList.add('active'); if (bookingForm.classList.contains('show')) { bookingForm.classList.remove('show'); formToggle.classList.remove('active'); } calculator.scrollIntoView({ behavior: 'smooth' }); }
+        });
+        formToggle.addEventListener('click', () => {
+            if (bookingForm.classList.contains('show')) { bookingForm.classList.remove('show'); formToggle.classList.remove('active'); }
+            else { bookingForm.classList.add('show'); formToggle.classList.add('active'); if (calculator.classList.contains('show')) { calculator.classList.remove('show'); calcToggle.classList.remove('active'); } bookingForm.scrollIntoView({ behavior: 'smooth' }); }
+        });
+        document.querySelectorAll('input[name="location"], #photoType, #duration, #retouch, #studioType').forEach(el => el.addEventListener('change', calculatePrice));
+        calculatePrice();
+
+        // === ОТПРАВКА ФОРМЫ (БЭКЕНД + FALLBACK НА EMAILJS) ===
+        const bookingFormContent = document.getElementById('bookingFormContent');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitText = document.getElementById('submitText');
+        const submitSpinner = document.getElementById('submitSpinner');
+        const formMessage = document.getElementById('formMessage');
+
+        function showFormMessage(type, htmlContent) {
+            formMessage.innerHTML = htmlContent;
+            formMessage.className = `form-message ${type}`;
+            setTimeout(() => { formMessage.style.display = 'none'; formMessage.className = 'form-message'; }, 10000);
+        }
+
+        bookingFormContent.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                fullname: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                session_type: document.getElementById('sessionType').value,
+                location_type: document.getElementById('locationType').value,
+                preferred_studio: document.getElementById('preferredStudio').value,
+                preferred_date: document.getElementById('preferredDate').value,
+                message: document.getElementById('message').value
+            };
+            
+            if (!formData.fullname || !formData.phone || !formData.email) {
+                showFormMessage('error', 'Заполните имя, телефон и email!');
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitText.style.display = 'none';
+            submitSpinner.style.display = 'inline';
+            
+            try {
+                const response = await fetch('api.php/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showFormMessage('success', 
+                        '✅ Заявка отправлена!<br><br>' +
+                        '📌 <strong>СОХРАНИТЕ ДЛЯ ВХОДА:</strong><br>' +
+                        '🔐 Логин: <code style="background:white;padding:2px 5px;border-radius:3px;">' + result.login + '</code><br>' +
+                        '🔑 Пароль: <code style="background:white;padding:2px 5px;border-radius:3px;">' + result.password + '</code><br><br>' +
+                        '<a href="profile.html" style="color:#2E8B57;font-weight:bold;">👉 Войти в личный кабинет 👈</a>'
+                    );
+                    bookingFormContent.reset();
+                    localStorage.setItem('camellia_login', result.login);
+                    localStorage.setItem('camellia_password', result.password);
+                } else {
+                    showFormMessage('error', 'Ошибка: ' + JSON.stringify(result.errors || result));
+                }
+            } catch (error) {
+                // Фолбэк на EmailJS
+                try {
+                    await emailjs.send('service_fa37fei', 'template_x6m7jld', {
+                        to_name: "Владелец студии",
+                        from_name: formData.fullname,
+                        from_email: formData.email,
+                        phone: formData.phone,
+                        session_type: formData.session_type,
+                        location_type: formData.location_type,
+                        preferred_studio: formData.preferred_studio || 'Не указано',
+                        preferred_date: formData.preferred_date || 'Не указано',
+                        message: formData.message || 'Не указано',
+                        date: new Date().toLocaleString('ru-RU')
+                    });
+                    showFormMessage('success', '✅ Заявка отправлена через email! Мы свяжемся с вами.');
+                    bookingFormContent.reset();
+                } catch (emailError) {
+                    showFormMessage('error', '❌ Не удалось отправить заявку. Попробуйте позже.');
+                }
+            } finally {
+                submitBtn.disabled = false;
+                submitText.style.display = 'inline';
+                submitSpinner.style.display = 'none';
+            }
+        });
+
+        // === МОДАЛЬНОЕ ОКНО ДЛЯ ВХОДА ===
+        const modal = document.getElementById('authModal');
+        const openLoginBtn = document.getElementById('openLoginBtn');
+        const closeModal = document.querySelector('.close-modal');
+        openLoginBtn.addEventListener('click', () => modal.style.display = 'flex');
+        closeModal.addEventListener('click', () => modal.style.display = 'none');
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
+
+        document.getElementById('doLoginBtn').addEventListener('click', async () => {
+            const login = document.getElementById('modalLogin').value;
+            const password = document.getElementById('modalPassword').value;
+            const msgDiv = document.getElementById('modalMessage');
+            if (!login || !password) { msgDiv.innerHTML = 'Введите логин и пароль'; msgDiv.className = 'modal-message error'; return; }
+            try {
+                const response = await fetch('api.php/profile', {
+                    method: 'GET',
+                    headers: { 'Authorization': 'Basic ' + btoa(login + ':' + password) }
+                });
+                const result = await response.json();
+                if (result.success) {
+                    msgDiv.innerHTML = 'Вход выполнен! Перенаправление...';
+                    msgDiv.className = 'modal-message success';
+                    sessionStorage.setItem('camellia_auth', btoa(login + ':' + password));
+                    setTimeout(() => window.location.href = 'profile.html?login=' + encodeURIComponent(login), 1500);
+                } else {
+                    msgDiv.innerHTML = 'Неверный логин или пароль';
+                    msgDiv.className = 'modal-message error';
+                }
+            } catch (error) {
+                msgDiv.innerHTML = 'Ошибка соединения с сервером';
+                msgDiv.className = 'modal-message error';
+            }
+        });
+
+        // === САЙДБАР ===
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            menuToggle.innerHTML = sidebar.classList.contains('active') ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+        });
+        document.getElementById('galleryLink').addEventListener('click', () => { document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' }); if (window.innerWidth <= 1024) { sidebar.classList.remove('active'); menuToggle.innerHTML = '<i class="fas fa-bars"></i>'; } });
+        document.getElementById('studiosLink').addEventListener('click', () => { document.getElementById('studios').scrollIntoView({ behavior: 'smooth' }); if (window.innerWidth <= 1024) { sidebar.classList.remove('active'); menuToggle.innerHTML = '<i class="fas fa-bars"></i>'; } });
+        document.getElementById('calculatorLink').addEventListener('click', () => { calculator.classList.add('show'); calcToggle.classList.add('active'); if (bookingForm.classList.contains('show')) { bookingForm.classList.remove('show'); formToggle.classList.remove('active'); } calculator.scrollIntoView({ behavior: 'smooth' }); if (window.innerWidth <= 1024) { sidebar.classList.remove('active'); menuToggle.innerHTML = '<i class="fas fa-bars"></i>'; } });
+        document.getElementById('bookingLink').addEventListener('click', () => { bookingForm.classList.add('show'); formToggle.classList.add('active'); if (calculator.classList.contains('show')) { calculator.classList.remove('show'); calcToggle.classList.remove('active'); } bookingForm.scrollIntoView({ behavior: 'smooth' }); if (window.innerWidth <= 1024) { sidebar.classList.remove('active'); menuToggle.innerHTML = '<i class="fas fa-bars"></i>'; } });
+    </script>
 </body>
 </html>
