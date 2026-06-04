@@ -13,7 +13,7 @@
         input, select, textarea { width: 100%; padding: 12px; border: 1px solid #D2B48C; border-radius: 8px; font-size: 1rem; }
         button { width: 100%; background: #5c3f32; color: white; border: none; padding: 15px; border-radius: 8px; font-size: 1.1rem; cursor: pointer; margin-top: 10px; }
         button:hover { background: #4e3a2c; }
-        .message { padding: 15px; border-radius: 8px; margin-bottom: 20px; display: none; }
+        .message { padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; display: none; }
         .message.success { background: #d4edda; color: #155724; display: block; }
         .message.error { background: #f8d7da; color: #721c24; display: block; }
         .login-box { background: #f5f5f5; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
@@ -21,30 +21,29 @@
         .logout { text-align: right; margin-bottom: 20px; }
         .logout a { color: #5c3f32; text-decoration: none; }
         .login-info { background: #F5E9DB; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+        .login-info code { background: white; padding: 4px 8px; border-radius: 5px; }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1> Личный кабинет</h1>
+    <h1>📸 Личный кабинет</h1>
     
-    <!-- Форма входа -->
     <div id="loginPanel">
         <div class="login-box">
-            <h3> Вход в личный кабинет</h3>
+            <h3>🔐 Вход в личный кабинет</h3>
             <div id="loginMessage" class="message"></div>
-            <input type="text" id="loginInput" placeholder="Логин" style="margin-bottom: 10px;">
+            <input type="text" id="loginInput" placeholder="Логин">
             <input type="password" id="passwordInput" placeholder="Пароль">
             <button onclick="login()">Войти</button>
         </div>
     </div>
     
-    <!-- Форма редактирования (скрыта) -->
     <div id="profilePanel" style="display: none;">
         <div class="logout">
-            <a href="#" onclick="logout()"> Выйти</a>
+            <a href="#" onclick="logout()">🚪 Выйти</a>
         </div>
         <div class="login-info">
-            <strong>Вы вошли как:</strong> <span id="userLogin"></span>
+            🔐 Ваш логин: <code id="userLogin"></code>
         </div>
         <div id="profileMessage" class="message"></div>
         
@@ -97,7 +96,7 @@
                 <label>Пожелания</label>
                 <textarea id="message" rows="3"></textarea>
             </div>
-            <button type="button" onclick="updateProfile()"> Сохранить изменения</button>
+            <button type="button" onclick="updateProfile()">💾 Сохранить изменения</button>
         </form>
     </div>
 </div>
@@ -111,12 +110,12 @@ async function login() {
     const msgDiv = document.getElementById('loginMessage');
     
     if (!login || !password) {
-        msgDiv.innerHTML = ' Введите логин и пароль';
+        msgDiv.innerHTML = '❌ Введите логин и пароль';
         msgDiv.className = 'message error';
         return;
     }
     
-    msgDiv.innerHTML = 'Проверка...';
+    msgDiv.innerHTML = '⏳ Проверка...';
     msgDiv.className = 'message';
     
     try {
@@ -134,11 +133,11 @@ async function login() {
             sessionStorage.setItem('camellia_auth', btoa(login + ':' + password));
             showProfileForm();
         } else {
-            msgDiv.innerHTML = ' Неверный логин или пароль';
+            msgDiv.innerHTML = '❌ Неверный логин или пароль';
             msgDiv.className = 'message error';
         }
     } catch (error) {
-        msgDiv.innerHTML = ' Ошибка соединения. Проверьте, что api.php в той же папке.';
+        msgDiv.innerHTML = '❌ Ошибка соединения. Проверьте, что api.php в той же папке.';
         msgDiv.className = 'message error';
     }
 }
@@ -148,7 +147,6 @@ function showProfileForm() {
     document.getElementById('profilePanel').style.display = 'block';
     document.getElementById('userLogin').textContent = currentUser.login;
     
-    // Заполняем форму
     document.getElementById('fullname').value = currentUser.fullname || '';
     document.getElementById('phone').value = currentUser.phone || '';
     document.getElementById('email').value = currentUser.email || '';
@@ -178,7 +176,7 @@ async function updateProfile() {
     };
     
     const msgDiv = document.getElementById('profileMessage');
-    msgDiv.innerHTML = ' Сохранение...';
+    msgDiv.innerHTML = '⏳ Сохранение...';
     msgDiv.className = 'message';
     
     try {
@@ -195,17 +193,15 @@ async function updateProfile() {
         
         if (result.success) {
             currentUser = result.user;
-            msgDiv.innerHTML = ' Данные успешно обновлены!';
+            msgDiv.innerHTML = '✅ Данные успешно обновлены!';
             msgDiv.className = 'message success';
-            setTimeout(() => {
-                msgDiv.style.display = 'none';
-            }, 3000);
+            setTimeout(() => msgDiv.style.display = 'none', 3000);
         } else {
-            msgDiv.innerHTML = ' Ошибка: ' + (result.error || 'Неизвестная ошибка');
+            msgDiv.innerHTML = '❌ Ошибка: ' + (result.error || 'Неизвестная ошибка');
             msgDiv.className = 'message error';
         }
     } catch (error) {
-        msgDiv.innerHTML = ' Ошибка соединения с сервером';
+        msgDiv.innerHTML = '❌ Ошибка соединения с сервером';
         msgDiv.className = 'message error';
     }
 }
@@ -217,12 +213,17 @@ function logout() {
     document.getElementById('profilePanel').style.display = 'none';
     document.getElementById('loginInput').value = '';
     document.getElementById('passwordInput').value = '';
-    const msgDiv = document.getElementById('loginMessage');
-    msgDiv.innerHTML = '';
-    msgDiv.className = 'message';
+    document.getElementById('loginMessage').innerHTML = '';
 }
 
-// Проверяем, есть ли сохранённый вход
+// Автоматический вход, если логин передан в URL
+const urlParams = new URLSearchParams(window.location.search);
+const loginFromUrl = urlParams.get('login');
+if (loginFromUrl) {
+    document.getElementById('loginInput').value = loginFromUrl;
+}
+
+// Проверяем сохранённую сессию
 if (sessionStorage.getItem('camellia_auth')) {
     login();
 }
