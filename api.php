@@ -6,7 +6,7 @@ header('Access-Control-Allow-Methods: GET, POST, PUT, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 // Настройки БД - ЗАМЕНИ НА СВОИ!
-$DB_HOST = 'localhost';
+$DB_HOST = 'kubsu-dev.ru';
 $DB_NAME = 'u82560';     // твоя БД
 $DB_USER = 'u82560';     // твой пользователь
 $DB_PASS = '3961962';    // твой пароль
