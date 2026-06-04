@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // ПОДКЛЮЧЕНИЕ К БД - ПРОВЕРЬ ЭТИ ДАННЫЕ!!!
-$DB_HOST = 'kubsu-dev.ru';
+$DB_HOST = 'localhost';
 $DB_NAME = 'u82560';
 $DB_USER = 'u82560';
 $DB_PASS = '3961962';  // ЕСЛИ НЕ ПОДХОДИТ - ПОМЕНЯЙ!
